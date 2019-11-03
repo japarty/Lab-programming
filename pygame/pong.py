@@ -20,6 +20,7 @@ flag_up=0
 flag_down=0
 x=ball_position[0]
 y=ball_position[0]
+qwe=[[0,2],[4,6]]
 direction=["left","up"]
 speed=2
 while True:
