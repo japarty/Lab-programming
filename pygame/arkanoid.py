@@ -9,8 +9,8 @@ BLOCK_COLOR=(0,0,255)
 PALETKA_SIZE=[70,10]
 BLOCK_SIZE=[50,20]
 SCREEN_SIZE=[500,400]
-FPS=60
-speed=2
+FPS=80
+speed=1
 
 blocks=[]
 
@@ -20,10 +20,12 @@ for i in range(3):
     for q in range(6):
         blocks.append([x,y])
         x+=BLOCK_SIZE[0]+25
+
+blocks_amount=len(blocks)
+print(blocks_amount)
 paletka_position=[SCREEN_SIZE[0]/2-PALETKA_SIZE[0]/2,SCREEN_SIZE[1]-50]
 ball_position=[paletka_position[0]+PALETKA_SIZE[0]/2-BALL_SIZE/2,paletka_position[1]-BALL_SIZE]
-print(len(blocks))
-print(blocks)
+
 pygame.init()
 gameDisplay = pygame.display.set_mode((SCREEN_SIZE[0], SCREEN_SIZE[1]))
 clock = pygame.time.Clock()
@@ -77,7 +79,7 @@ while True:
                 ball_position[1]+=speed
         if ball_position[1]<=0: direction[1]="down"
         if ball_position[1]==paletka_position[1]-BALL_SIZE:
-            if ball_position[0]>=paletka_position[0] and ball_position[0]<=paletka_position[0]+PALETKA_SIZE[0]-BALL_SIZE:
+            if ball_position[0]+BALL_SIZE>=paletka_position[0] and ball_position[0]<=paletka_position[0]+PALETKA_SIZE[0]:
                 direction[1]="up"
         if ball_position[1]>=SCREEN_SIZE[1]-BALL_SIZE: exit()
 
@@ -87,26 +89,30 @@ while True:
     for i in range(len(blocks)):
         if blocks[i]!=0:
             pygame.draw.rect(gameDisplay, BLOCK_COLOR,(blocks[i][0],blocks[i][1],BLOCK_SIZE[0],BLOCK_SIZE[1]))
-            if ball_position[0]>blocks[i][0] and ball_position[0]<blocks[i][0]+BLOCK_SIZE[0]:
+            if ball_position[0]+BALL_SIZE>blocks[i][0] and ball_position[0]<blocks[i][0]+BLOCK_SIZE[0]:
                 if ball_position[1]==blocks[i][1]:
                     direction[1]="up"
                     blocks[i]=0
-                    print("hit")
+                    blocks_amount-=1
+                    print(blocks_amount)
                 elif ball_position[1]==blocks[i][1]+BLOCK_SIZE[1]:
                     direction[1]="down"
                     blocks[i]=0
-                    print("hit")
-            elif ball_position[1]>blocks[i][1] and ball_position[1]<blocks[i][1]+BLOCK_SIZE[1]:
+                    blocks_amount-=1
+                    print(blocks_amount)
+            elif ball_position[1]+BALL_SIZE>blocks[i][1] and ball_position[1]<blocks[i][1]+BLOCK_SIZE[1]:
                 if ball_position[0]==blocks[i][0]:
                     direction[0]="left"
                     blocks[i]=0
-                    print("hit")
+                    blocks_amount-=1
+                    print(blocks_amount)
                 elif ball_position[0]==blocks[i][0]+BLOCK_SIZE[0]:
                     direction[0]="right"
                     blocks[i]=0
-                    print("hit")
-
-
-
+                    blocks_amount-=1
+                    print(blocks_amount)
+            if blocks_amount==0:
+                exit()
+                print("WIN")
     pygame.display.update()
     clock.tick(FPS)
